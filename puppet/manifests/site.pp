@@ -8,7 +8,7 @@ node default {
 
   ssh_authorized_key { 'andrewlorente_alorente':
     ensure => present,
-    key => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQCkmkuFbxxKmsDiqUMH1X7PFS+EZfR6i7U/Xe0vociH41kA8ZBr6GQ5pXU/MYg8LlOqOnJnxSeScDGMyPMOEida+NsJGYwYHOablAJ9H9cD3uQG9gPZQEYEd8gRCUPwzK9o+80SPAq4YCM8/wttMtEXmqEUVZ5skbQsCEwh5kfsqDNd/b+xXwYYWhr1nPSt8jimvjViXlJ5D7LjoWThFEXztTKTmhOhc6UiKPDeXGsU28A/PuAXgnLQaxjoHk/7IFWFr52yclYo+xGBRb2GBYO6I20sjQK8IHDK5L+f/wufHAoJZsvLj0ekWUwN+NAFLKO8BHqp5XCpblk+V/3JKr6P',
+    key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ==',
     name => 'andrewlorente_alorente',
     type => 'ssh-rsa',
     user => 'andrewlorente',
