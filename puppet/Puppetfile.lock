@@ -1,0 +1,16 @@
+FORGE
+  remote: http://forge.puppetlabs.com
+  specs:
+    puppetlabs/stdlib (4.1.0)
+
+GIT
+  remote: https://github.com/AndrewLorente/puppet-nginx.git
+  ref: master
+  sha: e5982f547cd93526d740733ae527a5bcd1bd0b8b
+  specs:
+    dhutty/nginx (0.0.2)
+
+DEPENDENCIES
+  dhutty/nginx (>= 0)
+  puppetlabs/stdlib (>= 0)
+
