@@ -1,4 +1,12 @@
 node default {
+  package { "haskell-platform":
+    ensure => installed,
+  }
+
+  package { "git":
+    ensure => installed,
+  }
+
   user { 'andrewlorente':
     shell => '/bin/bash',
     home => '/home/andrewlorente',
@@ -65,7 +73,7 @@ node default {
     server_names => ['andrewlorente.com'],
     listen_port => 80,
     force_ssl => false, #FIXME
-    www_root => '/u/apps/andrewlorente/current/public',
+    www_root => '/u/apps/andrewlorente/current/static',
   }
 
   # nginx::resource::vhost { 'andrewlorente.com':
@@ -77,4 +85,16 @@ node default {
   #   ssl_cert => '/etc/ssl/server.crt',
   #   ssl_key => '/etc/ssl/privatekey.pem',
   # }
+
+
+  file { 'andrewlorente-upstart':
+    path => '/etc/init/andrewlorente.conf',
+    ensure => file,
+    # Hardcoding /tmp/supply_drop like this is crappy. I don't know
+    # what I should do instead, though. :(
+    source => 'file:///tmp/supply_drop/puppet/manifests/andrewlorente.conf',
+    mode => 'a=r,u+w',
+    owner => 'root',
+    group => 'root',
+  }
 }
