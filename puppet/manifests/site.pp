@@ -63,7 +63,7 @@ node default {
   }
   nginx::resource::location { 'andrewlorente':
     ensure => present,
-    vhost => 'andrewlorente-nonssl.com',
+    vhost => 'andrewlorente.com',
     location => '/',
     match_type => '~',
     proxy => 'http://andrewlorente',
@@ -79,19 +79,19 @@ node default {
     ensure => present,
     server_names => ['andrewlorente.com'],
     listen_port => 80,
-    force_ssl => false, #FIXME
+    force_ssl => true,
     www_root => '/u/apps/andrewlorente/current/static',
   }
 
-  # nginx::resource::vhost { 'andrewlorente.com':
-  #   ensure => present,
-  #   server_names => ['andrewlorente.com'],
-  #   listen_port => 443,
-  #   www_root => '/u/apps/andrewlorente/current/public',
-  #   ssl => true,
-  #   ssl_cert => '/etc/ssl/server.crt',
-  #   ssl_key => '/etc/ssl/privatekey.pem',
-  # }
+  nginx::resource::vhost { 'andrewlorente.com':
+    ensure => present,
+    server_names => ['andrewlorente.com'],
+    listen_port => 443,
+    www_root => '/u/apps/andrewlorente/current/static',
+    ssl => true,
+    ssl_cert => '/etc/ssl/STAR_andrewlorente_com.chained.crt',
+    ssl_key => '/etc/ssl/andrewlorente.com.key',
+  }
 
 
   file { 'andrewlorente-upstart':
