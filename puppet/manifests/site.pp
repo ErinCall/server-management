@@ -1,3 +1,10 @@
+#THINGS THAT MUST BE DONE MANUALLY CUZ I'M NOT LAZY ENOUGH TO AUTOMATE THEM:
+# sudo cabal install --global cabal-install
+# iptables rules
+# fail2ban
+# Deny password auth for ssh
+
+
 node default {
   package { "haskell-platform":
     ensure => installed,
