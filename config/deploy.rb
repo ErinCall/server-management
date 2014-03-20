@@ -25,7 +25,7 @@ namespace :deploy do
 end
 
 after 'deploy:updated', 'deploy:compile'
-after 'deploy:compile', 'deploy:restart'
+after 'deploy:symlink:release', 'deploy:restart'
 
 namespace :puppet do
   set :puppet_parameters, 'puppet/manifests/site.pp'
