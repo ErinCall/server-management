@@ -1,4 +1,4 @@
-from fabric.api import cd, run, sudo, env, execute
+from fabric.api import cd, run, sudo, env, execute, task
 from datetime import datetime
 
 env.hosts = ['andrewlorente.com']
@@ -7,6 +7,7 @@ apps = {
     'andrewlorente': ['andrewlorente@andrewlorente.com'],
 }
 
+@task
 def deploy(app):
     if app not in apps.keys():
         raise Exception("Unknown deploy target '{0}'".format(app))
