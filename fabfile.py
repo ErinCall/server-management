@@ -1,4 +1,4 @@
-from fabric.api import cd, run, sudo, env, execute, task
+from fabric.api import cd, run, sudo, env, execute, task, local
 from datetime import datetime
 
 env.hosts = ['andrewlorente.com']
@@ -33,3 +33,6 @@ def build(app, release_id):
 def release(app):
     sudo("initctl restart " + app)
 
+@task
+def puppet():
+    local('bundle exec cap production puppet:apply')
