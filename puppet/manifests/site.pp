@@ -4,18 +4,23 @@
 # fail2ban
 # Deny password auth for ssh
 # Install pip via https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py
+# Create catsnap database
 
 
 node default {
   package { "haskell-platform":
     ensure => installed,
   }
-
   package { "git":
     ensure => installed,
   }
-
   package { "libpq-dev":
+    ensure => installed,
+  }
+  package { "postgresql-9.1":
+    ensure => installed,
+  }
+  package { "postgresql-client-common":
     ensure => installed,
   }
 
