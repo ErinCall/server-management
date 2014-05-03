@@ -15,7 +15,7 @@ def deploy(app):
     execute(restart, app, hosts=['alorente@andrewlorente.com'])
 
 def checkout(app, release_dir):
-    repo = "https://github.com/AndrewLorente/{0}.git".format(app)
+    repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(app)
     run("git clone -q {0} {1}".format(repo, release_dir))
 
 def build_haskell(app, release_dir):
