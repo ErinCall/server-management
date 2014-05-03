@@ -23,6 +23,9 @@ node default {
   package { "postgresql-client-common":
     ensure => installed,
   }
+  package { "znc":
+    ensure => installed,
+  }
 
   package { "python-dev":
     ensure => installed,
