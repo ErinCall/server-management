@@ -12,6 +12,8 @@ def deploy(app):
 
     execute(checkout, app, release_dir, hosts=apps[app]['hosts'])
     execute(apps[app]['build'], app, release_dir, hosts=apps[app]['hosts'])
+    if 'extra' in apps[app]:
+        execute(apps[app]['extra'], app, release_dir, hosts=apps[app]['hosts'])
     execute(restart, app, hosts=['alorente@andrewlorente.com'])
 
 def checkout(app, release_dir):
@@ -34,6 +36,9 @@ def build_python(app, release_dir):
         run("Env/bin/python setup.py develop")
     run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
 
+def dotenv(app, release_dir):
+    run("ln -nfs /u/apps/{0}/shared/.env {1}/.env".format(app, release_dir))
+
 def restart(app):
     sudo("initctl restart " + app)
 
@@ -53,6 +58,7 @@ apps = {
     'catsnap': {
         'build': build_python,
         'hosts': ['catsnap@andrewlorente.com'],
+        'extra': dotenv,
     },
 }
 
