@@ -5,6 +5,11 @@
 # Deny password auth for ssh
 # Install pip via https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py
 # Create catsnap database
+# Backups:
+## curl get.rvm.io | sudo bash
+## rvm install 2.0.0
+## gem install astrails-safe --source http://gemcutter.org
+## vi root.crontab astrails.conf
 
 
 node default {
