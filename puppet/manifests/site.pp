@@ -31,7 +31,21 @@ node default {
   package { "znc":
     ensure => installed,
   }
-
+  package { "libjpeg-dev":
+    ensure => installed,
+  }
+  file { '/usr/lib/libjpeg.so':
+   ensure => 'link',
+   target => '/usr/lib/x86_64-linux-gnu/libjpeg.so',
+  }
+  file { '/usr/lib/freetype.so':
+   ensure => 'link',
+   target => '/usr/lib/x86_64-linux-gnu/freetype.so',
+  }
+  file { '/usr/lib/libz.so':
+   ensure => 'link',
+   target => '/usr/lib/x86_64-linux-gnu/libz.so',
+  }
   package { "python-dev":
     ensure => installed,
   }
