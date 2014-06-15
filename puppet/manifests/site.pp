@@ -71,6 +71,13 @@ node default {
     ensure => present,
   }
 
+  user { 'identity':
+    shell => '/bin/bash',
+    home => '/home/identity',
+    managehome => true,
+    ensure => present,
+  }
+
   ssh_authorized_key { 'andrewlorente_alorente':
     ensure => present,
     key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ==',
@@ -93,6 +100,14 @@ node default {
     name => 'catsnap_alorente',
     type => 'ssh-rsa',
     user => 'catsnap',
+  }
+
+  ssh_authorized_key { 'identity_alorente':
+    ensure => present,
+    key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ==',
+    name => 'identity_alorente',
+    type => 'ssh-rsa',
+    user => 'identity',
   }
 
   file { ['/u', '/u/apps']:
@@ -140,6 +155,19 @@ node default {
     mode => '0644'
   }
 
+  file { [
+      '/u/apps/identity',
+      '/u/apps/identity/releases',
+      '/u/apps/identity/shared/',
+      '/u/apps/identity/shared/pids',
+      '/u/apps/identity/shared/log',
+    ]:
+    ensure => 'directory',
+    owner => 'identity',
+    group => 'identity',
+    mode => '0644'
+  }
+
   class {'nginx':
     nx_worker_processes => 1,
     nx_worker_connections => 1024,
@@ -164,6 +192,12 @@ node default {
     ensure => present,
     members => [
       'localhost:5000 weight=1',
+    ],
+  }
+  nginx::resource::upstream { 'identity':
+    ensure => present,
+    members => [
+      'localhost:5001 weight=1',
     ],
   }
 
@@ -206,7 +240,19 @@ node default {
       'X-Forwarded-Proto' => '$scheme',
     },
   }
-
+  nginx::resource::location { 'identity':
+    ensure => present,
+    vhost => 'id.andrewlorente.com',
+    location => '/',
+    match_type => '~',
+    proxy => 'http://identity',
+    proxy_set_headers => {
+      'REMOTE_ADDR' => '$remote_addr',
+      'HTTP_HOST' => '$http_host',
+      'Host' => '$host',
+      'X-Forwarded-Proto' => '$scheme',
+    },
+  }
 
   nginx::resource::vhost { 'andrewlorente-nonssl.com':
     ensure => present,
@@ -228,6 +274,13 @@ node default {
     listen_port => 80,
     force_ssl => true,
     www_root => '/u/apps/catsnap/current/static',
+  }
+  nginx::resource::vhost { 'id.andrewlorente-nonssl.com':
+    ensure => present,
+    server_names => ['id.andrewlorente.com'],
+    listen_port => 80,
+    force_ssl => true,
+    www_root => '/u/apps/identity/current/static',
   }
 
   nginx::resource::vhost { 'andrewlorente.com':
@@ -253,6 +306,15 @@ node default {
     server_names => ['catsnap.andrewlorente.com'],
     listen_port => 443,
     www_root => '/u/apps/catsnap/current/static',
+    ssl => true,
+    ssl_cert => '/etc/ssl/STAR_andrewlorente_com.chained.crt',
+    ssl_key => '/etc/ssl/andrewlorente.com.key',
+  }
+  nginx::resource::vhost { 'id.andrewlorente.com':
+    ensure => present,
+    server_names => ['id.andrewlorente.com'],
+    listen_port => 443,
+    www_root => '/u/apps/identity/current/static',
     ssl => true,
     ssl_cert => '/etc/ssl/STAR_andrewlorente_com.chained.crt',
     ssl_key => '/etc/ssl/andrewlorente.com.key',
@@ -285,6 +347,16 @@ node default {
     # Hardcoding /tmp/supply_drop like this is crappy. I don't know
     # what I should do instead, though. :(
     source => 'file:///tmp/supply_drop/puppet/manifests/catsnap.conf',
+    mode => 'a=r,u+w',
+    owner => 'root',
+    group => 'root',
+  }
+  file { 'identity-upstart':
+    path => '/etc/init/identity.conf',
+    ensure => file,
+    # Hardcoding /tmp/supply_drop like this is crappy. I don't know
+    # what I should do instead, though. :(
+    source => 'file:///tmp/supply_drop/puppet/manifests/identity.conf',
     mode => 'a=r,u+w',
     owner => 'root',
     group => 'root',
