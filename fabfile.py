@@ -15,6 +15,7 @@ def deploy(app):
     execute(apps[app]['build'], app, release_dir, hosts=apps[app]['hosts'])
     if 'extra' in apps[app]:
         execute(apps[app]['extra'], app, release_dir, hosts=apps[app]['hosts'])
+    run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
     execute(restart, app, hosts=['alorente@andrewlorente.com'])
 
 def checkout(app, release_dir):
@@ -28,7 +29,6 @@ def build_haskell(app, release_dir):
             "--dependencies-only --force-reinstall")
         run("cabal configure")
         run("cabal build")
-    run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
 
 def build_python_with_setup(app, release_dir):
     return build_python(app, release_dir, 'Env/bin/python setup.py develop')
@@ -41,7 +41,6 @@ def build_python(app, release_dir, requirements_command):
         run("virtualenv Env")
         run("source Env/bin/activate")
         run(requirements_command)
-    run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
 
 def dotenv(app, release_dir):
     run("ln -nfs /u/apps/{0}/shared/.env {1}/.env".format(app, release_dir))
