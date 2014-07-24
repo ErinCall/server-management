@@ -10,16 +10,17 @@ def deploy(app):
 
     release_id = datetime.now().strftime("%Y%m%d%H%M%S")
     release_dir = "/u/apps/{0}/releases/{1}".format(app, release_id)
+    repo = apps[app].get('repo', app)
 
-    execute(checkout, app, release_dir, hosts=apps[app]['hosts'])
+    execute(checkout, repo, release_dir, hosts=apps[app]['hosts'])
     execute(apps[app]['build'], app, release_dir, hosts=apps[app]['hosts'])
     if 'extra' in apps[app]:
         execute(apps[app]['extra'], app, release_dir, hosts=apps[app]['hosts'])
-    run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
+    execute(update_symlink, app, release_dir, hosts=apps[app]['hosts'])
     execute(restart, app, hosts=['alorente@andrewlorente.com'])
 
-def checkout(app, release_dir):
-    repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(app)
+def checkout(repo, release_dir):
+    repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(repo)
     run("git clone -q {0} {1}".format(repo, release_dir))
 
 def build_haskell(app, release_dir):
@@ -29,6 +30,10 @@ def build_haskell(app, release_dir):
             "--dependencies-only --force-reinstall")
         run("cabal configure")
         run("cabal build")
+
+def build_js(app, release_dir):
+    with cd(release_dir):
+        run("npm install")
 
 def build_python_with_setup(app, release_dir):
     return build_python(app, release_dir, 'Env/bin/python setup.py develop')
@@ -44,6 +49,9 @@ def build_python(app, release_dir, requirements_command):
 
 def dotenv(app, release_dir):
     run("ln -nfs /u/apps/{0}/shared/.env {1}/.env".format(app, release_dir))
+
+def update_symlink(app, release_dir):
+    run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
 
 def restart(app):
     sudo("initctl restart " + app)
@@ -70,6 +78,11 @@ apps = {
         'build': build_python_with_requirements,
         'hosts': ['identity@andrewlorente.com'],
         'extra': dotenv,
+    },
+    'paste': {
+        'build': build_js,
+        'hosts': ['paste@andrewlorente.com'],
+        'repo': 'haste-server',
     },
 }
 

@@ -10,6 +10,10 @@
 ## rvm install 2.0.0
 ## gem install astrails-safe --source http://gemcutter.org
 ## vi root.crontab astrails.conf
+## aptitude install python-software-properties
+## apt-add-repository ppa:chris-lea/node.js
+## apt-get update
+## apt-get install nodejs
 
 
 node default {
@@ -32,6 +36,9 @@ node default {
     ensure => installed,
   }
   package { "libjpeg-dev":
+    ensure => installed,
+  }
+  package { "redis-server":
     ensure => installed,
   }
   file { '/usr/lib/libjpeg.so':
@@ -78,6 +85,13 @@ node default {
     ensure => present,
   }
 
+  user { 'paste':
+    shell => '/bin/bash',
+    home => '/home/paste',
+    managehome => true,
+    ensure => present,
+  }
+
   ssh_authorized_key { 'andrewlorente_alorente':
     ensure => present,
     key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ==',
@@ -108,6 +122,14 @@ node default {
     name => 'identity_alorente',
     type => 'ssh-rsa',
     user => 'identity',
+  }
+
+  ssh_authorized_key { 'paste_alorente':
+    ensure => present,
+    key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ==',
+    name => 'paste_alorente',
+    type => 'ssh-rsa',
+    user => 'paste',
   }
 
   file { ['/u', '/u/apps']:
@@ -168,6 +190,19 @@ node default {
     mode => '0644'
   }
 
+  file { [
+      '/u/apps/paste',
+      '/u/apps/paste/releases',
+      '/u/apps/paste/shared/',
+      '/u/apps/paste/shared/pids',
+      '/u/apps/paste/shared/log',
+    ]:
+    ensure => 'directory',
+    owner => 'paste',
+    group => 'paste',
+    mode => '0644'
+  }
+
   class {'nginx':
     nx_worker_processes => 1,
     nx_worker_connections => 1024,
@@ -198,6 +233,12 @@ node default {
     ensure => present,
     members => [
       'localhost:5001 weight=1',
+    ],
+  }
+  nginx::resource::upstream { 'paste':
+    ensure => present,
+    members => [
+      'localhost:7777 weight=1',
     ],
   }
 
@@ -253,6 +294,19 @@ node default {
       'X-Forwarded-Proto' => '$scheme',
     },
   }
+  nginx::resource::location { 'paste':
+    ensure => present,
+    vhost => 'paste.andrewlorente.com',
+    location => '/',
+    match_type => '~',
+    proxy => 'http://paste',
+    proxy_set_headers => {
+      'REMOTE_ADDR' => '$remote_addr',
+      'HTTP_HOST' => '$http_host',
+      'Host' => '$host',
+      'X-Forwarded-Proto' => '$scheme',
+    },
+  }
 
   nginx::resource::vhost { 'andrewlorente-nonssl.com':
     ensure => present,
@@ -281,6 +335,13 @@ node default {
     listen_port => 80,
     force_ssl => true,
     www_root => '/u/apps/identity/current/static',
+  }
+  nginx::resource::vhost { 'paste.andrewlorente-nonssl.com':
+    ensure => present,
+    server_names => ['paste.andrewlorente.com'],
+    listen_port => 80,
+    force_ssl => true,
+    www_root => '/u/apps/paste/current/static',
   }
 
   nginx::resource::vhost { 'andrewlorente.com':
@@ -315,6 +376,15 @@ node default {
     server_names => ['id.andrewlorente.com'],
     listen_port => 443,
     www_root => '/u/apps/identity/current/static',
+    ssl => true,
+    ssl_cert => '/etc/ssl/STAR_andrewlorente_com.chained.crt',
+    ssl_key => '/etc/ssl/andrewlorente.com.key',
+  }
+  nginx::resource::vhost { 'paste.andrewlorente.com':
+    ensure => present,
+    server_names => ['paste.andrewlorente.com'],
+    listen_port => 443,
+    www_root => '/u/apps/paste/current/static',
     ssl => true,
     ssl_cert => '/etc/ssl/STAR_andrewlorente_com.chained.crt',
     ssl_key => '/etc/ssl/andrewlorente.com.key',
@@ -357,6 +427,16 @@ node default {
     # Hardcoding /tmp/supply_drop like this is crappy. I don't know
     # what I should do instead, though. :(
     source => 'file:///tmp/supply_drop/puppet/manifests/identity.conf',
+    mode => 'a=r,u+w',
+    owner => 'root',
+    group => 'root',
+  }
+  file { 'paste-upstart':
+    path => '/etc/init/paste.conf',
+    ensure => file,
+    # Hardcoding /tmp/supply_drop like this is crappy. I don't know
+    # what I should do instead, though. :(
+    source => 'file:///tmp/supply_drop/puppet/manifests/paste.conf',
     mode => 'a=r,u+w',
     owner => 'root',
     group => 'root',
