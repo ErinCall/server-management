@@ -41,6 +41,9 @@ node default {
   package { "redis-server":
     ensure => installed,
   }
+  package { 'libmagickwand-dev':
+    ensure => installed,
+  }
   file { '/usr/lib/libjpeg.so':
    ensure => 'link',
    target => '/usr/lib/x86_64-linux-gnu/libjpeg.so',
