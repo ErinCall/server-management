@@ -6,7 +6,7 @@ FORGE
 GIT
   remote: https://github.com/AndrewLorente/puppet-nginx.git
   ref: master
-  sha: 963f503175dd11355ed8181f460eb9150fc374b7
+  sha: fe0cb665c3e31ba62b32c7fb0a6405672354d83e
   specs:
     dhutty/nginx (0.0.2)
 
