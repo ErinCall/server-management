@@ -5,8 +5,8 @@
 # Deny password auth for ssh
 # Install pip via https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py
 # Create catsnap database
-# The gitlab droplet ships with an ssllabs-frowned-upon cipher list; I manually edited
-#   sites-enabled/gitlab to use the ssllabs-approved list.
+# The gitlab droplet ships with an ssllabs-frowned-upon ssl; I manually edited
+#   sites-enabled/gitlab to use the ssllabs-approved cipher list and allow TLS 1.2.
 # Backups:
 ## curl get.rvm.io | sudo bash
 ## rvm install 2.0.0
