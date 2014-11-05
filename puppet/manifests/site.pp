@@ -426,6 +426,16 @@ node default {
     owner => 'root',
     group => 'root',
   }
+  file { 'catsnap-worker-upstart':
+    path => '/etc/init/catsnap-worker.conf',
+    ensure => file,
+    # Hardcoding /tmp/supply_drop like this is crappy. I don't know
+    # what I should do instead, though. :(
+    source => 'file:///tmp/supply_drop/puppet/manifests/catsnap-worker.conf',
+    mode => 'a=r,u+w',
+    owner => 'root',
+    group => 'root',
+  }
   file { 'identity-upstart':
     path => '/etc/init/identity.conf',
     ensure => file,
