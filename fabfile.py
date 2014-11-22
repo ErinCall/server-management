@@ -17,7 +17,11 @@ def deploy(app):
     if 'extra' in apps[app]:
         execute(apps[app]['extra'], app, release_dir, hosts=apps[app]['hosts'])
     execute(update_symlink, app, release_dir, hosts=apps[app]['hosts'])
-    execute(restart, app, hosts=['alorente@andrewlorente.com'])
+    if 'restart' in apps[app]:
+        for service in apps[app]['restart']:
+            execute(restart, service, hosts=['alorente@andrewlorente.com'])
+    else:
+        execute(restart, app, hosts=['alorente@andrewlorente.com'])
 
 def checkout(repo, release_dir):
     repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(repo)
@@ -73,6 +77,7 @@ apps = {
         'build': build_python_with_setup,
         'hosts': ['catsnap@andrewlorente.com'],
         'extra': dotenv,
+        'restart': ['catsnap', 'catsnap-worker']
     },
     'identity': {
         'build': build_python_with_requirements,
