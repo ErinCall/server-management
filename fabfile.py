@@ -15,7 +15,13 @@ def deploy(app):
     execute(checkout, repo, release_dir, hosts=apps[app]['hosts'])
     execute(apps[app]['build'], app, release_dir, hosts=apps[app]['hosts'])
     if 'extra' in apps[app]:
-        execute(apps[app]['extra'], app, release_dir, hosts=apps[app]['hosts'])
+        extra = apps[app]['extra']
+        if hasattr(extra, '__iter__'):
+            for action in extra:
+                execute(action, app, release_dir, hosts=apps[app]['hosts'])
+        else:
+            execute(extra, app, release_dir, hosts=apps[app]['hosts'])
+
     execute(update_symlink, app, release_dir, hosts=apps[app]['hosts'])
     if 'restart' in apps[app]:
         for service in apps[app]['restart']:
@@ -54,6 +60,11 @@ def build_python(app, release_dir, requirements_command):
 def dotenv(app, release_dir):
     run("ln -nfs /u/apps/{0}/shared/.env {1}/.env".format(app, release_dir))
 
+def yoyo_migrate(app, release_dir):
+    run("DATABASE_URL=$(grep DATABASE_URL {0}/.env | sed s/DATABASE_URL=//); "
+        "{0}/Env/bin/yoyo-migrate -b apply {0}/migrations $DATABASE_URL".
+        format(release_dir))
+
 def update_symlink(app, release_dir):
     run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
 
@@ -76,7 +87,7 @@ apps = {
     'catsnap': {
         'build': build_python_with_setup,
         'hosts': ['catsnap@andrewlorente.com'],
-        'extra': dotenv,
+        'extra': [dotenv, yoyo_migrate],
         'restart': ['catsnap', 'catsnap-worker']
     },
     'identity': {
