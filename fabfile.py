@@ -4,30 +4,31 @@ from datetime import datetime
 env.hosts = ['andrewlorente.com']
 
 @task
-def deploy(app):
-    if app not in apps.keys():
-        raise Exception("Unknown deploy target '{0}'".format(app))
+def deploy(app_name):
+    if app_name not in apps.keys():
+        raise Exception("Unknown deploy target '{0}'".format(app_name))
 
+    app = apps[app_name]
     release_id = datetime.now().strftime("%Y%m%d%H%M%S")
-    release_dir = "/u/apps/{0}/releases/{1}".format(app, release_id)
-    repo = apps[app].get('repo', app)
+    release_dir = "/u/apps/{0}/releases/{1}".format(app_name, release_id)
+    repo = app.get('repo', app_name)
 
-    execute(checkout, repo, release_dir, hosts=apps[app]['hosts'])
-    execute(apps[app]['build'], app, release_dir, hosts=apps[app]['hosts'])
-    if 'extra' in apps[app]:
-        extra = apps[app]['extra']
+    execute(checkout, repo, release_dir, hosts=app['hosts'])
+    execute(app['build'], app_name, release_dir, hosts=app['hosts'])
+    if 'extra' in app:
+        extra = app['extra']
         if hasattr(extra, '__iter__'):
             for action in extra:
-                execute(action, app, release_dir, hosts=apps[app]['hosts'])
+                execute(action, app_name, release_dir, hosts=app['hosts'])
         else:
-            execute(extra, app, release_dir, hosts=apps[app]['hosts'])
+            execute(extra, app_name, release_dir, hosts=app['hosts'])
 
-    execute(update_symlink, app, release_dir, hosts=apps[app]['hosts'])
-    if 'restart' in apps[app]:
-        for service in apps[app]['restart']:
+    execute(update_symlink, app_name, release_dir, hosts=app['hosts'])
+    if 'restart' in app:
+        for service in app['restart']:
             execute(restart, service, hosts=['alorente@andrewlorente.com'])
     else:
-        execute(restart, app, hosts=['alorente@andrewlorente.com'])
+        execute(restart, app_name, hosts=['alorente@andrewlorente.com'])
 
 def checkout(repo, release_dir):
     repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(repo)
