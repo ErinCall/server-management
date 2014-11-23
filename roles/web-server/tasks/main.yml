@@ -1,0 +1,37 @@
+---
+- apt: name=haskell-platform state=present
+- apt: name=libjpeg-dev state=present
+- apt: name=libmagickwand-dev state=present
+- apt: name=python-dev state=present
+
+# these symlinks are created in site.pp for PIL's benefit. They should be
+# unnecessary for Wand
+# - file: src=/usr/lib/x86_64-linux-gnu/libjpeg.so
+#             dest=/usr/lib/libjpeg.so owner=root group=root state=link
+# - file: src=/usr/lib/x86_64-linux-gnu/freetype.so
+#             dest=/usr/lib/freetype.so owner=root group=root state=link
+# - file: src=/usr/lib/x86_64-linux-gnu/libz.so
+#             dest=/usr/lib/libz.so owner=root group=root state=link
+
+- user: name={{item.name}} state=present shell=/bin/bash home=/home/{{item.name}}
+  with_items: sites
+
+- authorized_key: user={{item.name}} key="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ== andrewlorente@Chunk.local"
+  with_items: sites
+
+- name: release directories
+  file: dest=/home/{{item.name}}/shared/log state=directory
+  file: dest=/home/{{item.name}}/shared/pids state=directory
+  file: dest=/home/{{item.name}}/releases state=directory
+  with_items: sites
+
+# I find with_subelements a little complex. It takes a list of attribute
+# names representing a path to recurse down while forming a cross product.
+# The numbers are the 0-indexed recursion depth, so here, item.1 is each service
+# within each site. Whew!
+- name: config files
+  copy: src={{item.1}}.conf dest=/etc/init/{{item.1}}.conf
+          owner=root group=root mode=0400
+  with_subelements:
+    - sites
+    - services

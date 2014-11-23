@@ -1,0 +1,2 @@
+---
+- apt: name=postgresql-9.3 state=present

@@ -1,0 +1,24 @@
+---
+sites:
+  - name: andrewlorente
+    port: 8000
+    domain: andrewlorente.com
+    services: [andrewlorente]
+  - name: bloge
+    port: 8001
+    domain: blog.andrewlorente.com
+    services: [bloge]
+  - name: catsnap
+    port: 5000
+    domain: catsnap.andrewlorente.com
+    services:
+      - catsnap
+      - catsnap-worker
+  - name: identity
+    port: 5001
+    domain: id.andrewlorente.com
+    services: [identity]
+  - name: paste
+    port: 7777
+    domain: paste.andrewlorente.com
+    services: [paste]

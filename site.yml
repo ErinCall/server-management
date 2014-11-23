@@ -1,0 +1,5 @@
+---
+- include: web-servers.yml
+- include: db-servers.yml
+- include: cache-servers.yml
+- include: irc-bouncers.yml
