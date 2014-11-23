@@ -1,2 +1,8 @@
 ---
 - apt: name=postgresql-9.3 state=present
+- pip: name=psycopg2 version=2.5
+  sudo: yes
+  sudo_user: root
+- postgresql_user: name=catsnap password=md50a15f33572f8a7c8b05daf48e87446b4
+                    encrypted=true role_attr_flags=LOGIN
+- postgresql_db: name=catsnap template=template1 owner=catsnap

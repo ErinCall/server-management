@@ -10,7 +10,7 @@ def deploy(app_name):
 
     app = apps[app_name]
     release_id = datetime.now().strftime("%Y%m%d%H%M%S")
-    release_dir = "/u/apps/{0}/releases/{1}".format(app_name, release_id)
+    release_dir = "/home/{0}/releases/{1}".format(app_name, release_id)
     repo = app.get('repo', app_name)
 
     execute(checkout, repo, release_dir, hosts=app['hosts'])
@@ -59,7 +59,7 @@ def build_python(app, release_dir, requirements_command):
         run(requirements_command)
 
 def dotenv(app, release_dir):
-    run("ln -nfs /u/apps/{0}/shared/.env {1}/.env".format(app, release_dir))
+    run("ln -nfs /home/{0}/shared/.env {1}/.env".format(app, release_dir))
 
 def yoyo_migrate(app, release_dir):
     run("DATABASE_URL=$(grep DATABASE_URL {0}/.env | sed s/DATABASE_URL=//); "
@@ -67,14 +67,10 @@ def yoyo_migrate(app, release_dir):
         format(release_dir))
 
 def update_symlink(app, release_dir):
-    run("ln -nfs {0} /u/apps/{1}/current".format(release_dir, app))
+    run("ln -nfs {0} /home/{1}/current".format(release_dir, app))
 
 def restart(app):
     sudo("initctl restart " + app)
-
-@task
-def puppet():
-    local('bundle exec cap production puppet:apply')
 
 apps = {
     'bloge': {

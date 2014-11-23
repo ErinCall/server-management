@@ -1,5 +1,6 @@
 - hosts: db-servers
   sudo: yes
+  sudo_user: postgres
   roles:
     - common
     - db-server
