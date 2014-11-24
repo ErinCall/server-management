@@ -19,18 +19,21 @@
   with_items:
     - gnupg
     - ruby2.0
-- command: /usr/bin/gem2.0 install astrails-safe creates=/usr/local/bin/astrails-safe
+- command: /usr/bin/gem2.0 install astrails-safe
+            creates=/usr/local/bin/astrails-safe
   sudo: true
   sudo_user: root
 - copy: src=alorente.pub dest=/root/alorente.pub
   sudo: true
   sudo_user: root
-- command: gpg --import --import-options merge-only --yes /root/alorente.pub
+- command: /usr/bin/gpg --import --yes /root/alorente.pub
   sudo: true
   sudo_user: root
 - template: dest=/root/safe.conf src=safe.conf.j2
   sudo: yes
   sudo_user: root
-- cron: name=backup hour=9 job='/usr/local/bin/astrails-safe /root/safe.conf >> /var/log/cron/backup-`date "+\%Y\%m\%d_\%H\%M"`.log 2>&1'
+- cron: name=backup hour=9
+          job='GEM_HOME=/root/.gem/ruby/2.0.0/ /usr/local/bin/astrails-safe
+          /root/safe.conf >> /var/log/cron/backup-`date "+\%Y\%m\%d_\%H\%M"`.log 2>&1'
   sudo: yes
   sudo_user: root
