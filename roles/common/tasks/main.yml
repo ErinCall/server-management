@@ -1,9 +1,11 @@
 ---
 # packages I figure will be helpful no matter the context
-- apt: name=git state=present
-- apt: name=libpq-dev state=present
-- apt: name=postgresql-client-common state=present
-- apt: name=redis-tools state=present
+- apt: name={{item}} state=present
+  with_items:
+    - git
+    - libpq-dev
+    - postgresql-client-common
+    - redis-tools
 
 # pip may not be directly needed for deployed apps, but ansible itself
 # may need python modules available on deploy targets, so it's nice to
