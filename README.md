@@ -19,4 +19,5 @@ The mailman server is also not managed; stupid mailman needs Apache.
 1. I think my snapshot leaves the IRC port closed
 1. znc.conf
 1. test fabfile against config-staging
+1. test all sites (including: libjpeg foolishness in web-server/tasks/main.yml)
 1. stop pointing the ansible playbooks at config-staging in hosts.cfg
