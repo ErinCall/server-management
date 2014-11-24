@@ -3,6 +3,34 @@
 - pip: name=psycopg2 version=2.5
   sudo: yes
   sudo_user: root
+- copy: src=pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
+          owner=postgres group=postgres
+  notify: restart postgresql
+- copy: src=pg_ident.conf dest=/etc/postgresql/9.3/main/pg_ident.conf
+          owner=postgres group=postgres
+  notify: restart postgresql
 - postgresql_user: name=catsnap password=md50a15f33572f8a7c8b05daf48e87446b4
                     encrypted=true role_attr_flags=LOGIN
 - postgresql_db: name=catsnap template=template1 owner=catsnap
+
+# backups
+- postgresql_user: name=backups encrypted=true role_attr_flags=LOGIN,SUPERUSER
+- apt: name={{item}} state=present
+  with_items:
+    - gnupg
+    - ruby2.0
+- command: /usr/bin/gem2.0 install astrails-safe creates=/usr/local/bin/astrails-safe
+  sudo: true
+  sudo_user: root
+- copy: src=alorente.pub dest=/root/alorente.pub
+  sudo: true
+  sudo_user: root
+- command: gpg --import --import-options merge-only --yes /root/alorente.pub
+  sudo: true
+  sudo_user: root
+- template: dest=/root/safe.conf src=safe.conf.j2
+  sudo: yes
+  sudo_user: root
+- cron: name=backup hour=9 job='/usr/local/bin/astrails-safe /root/safe.conf >> /var/log/cron/backup-`date "+\%Y\%m\%d_\%H\%M"`.log 2>&1'
+  sudo: yes
+  sudo_user: root

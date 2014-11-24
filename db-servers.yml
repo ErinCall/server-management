@@ -4,3 +4,6 @@
   roles:
     - common
     - db-server
+  handlers:
+    - name: restart postgresql
+      service: name=postgresql state=restarted
