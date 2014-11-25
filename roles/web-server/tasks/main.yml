@@ -13,15 +13,6 @@
     - update cabal packages
     - build new cabal
 
-# these symlinks are created in site.pp for PIL's benefit. They should be
-# unnecessary for Wand
-# - file: src=/usr/lib/x86_64-linux-gnu/libjpeg.so
-#             dest=/usr/lib/libjpeg.so owner=root group=root state=link
-# - file: src=/usr/lib/x86_64-linux-gnu/freetype.so
-#             dest=/usr/lib/freetype.so owner=root group=root state=link
-# - file: src=/usr/lib/x86_64-linux-gnu/libz.so
-#             dest=/usr/lib/libz.so owner=root group=root state=link
-
 - user: name={{item.name}} state=present shell=/bin/bash home=/home/{{item.name}}
   with_items: sites
 
