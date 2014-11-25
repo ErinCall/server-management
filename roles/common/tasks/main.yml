@@ -6,6 +6,7 @@
     - libpq-dev
     - postgresql-client-common
     - redis-tools
+    - tree
 
 # pip may not be directly needed for deployed apps, but ansible itself
 # may need python modules available on deploy targets, so it's nice to

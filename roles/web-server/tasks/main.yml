@@ -1,12 +1,17 @@
 ---
 - apt: name={{item}} state=present
   with_items:
-    - haskell-platform
     - libjpeg-dev
     - libmagickwand-dev
     - python-dev
+    - python-virtualenv
     - nginx
     - nodejs
+    - npm
+- apt: name=haskell-platform
+  notify:
+    - update cabal packages
+    - build new cabal
 
 # these symlinks are created in site.pp for PIL's benefit. They should be
 # unnecessary for Wand
@@ -24,10 +29,11 @@
   with_items: sites
 
 - name: release directories
-  file: dest=/home/{{item.name}}/shared/log state=directory
-  file: dest=/home/{{item.name}}/shared/pids state=directory
-  file: dest=/home/{{item.name}}/releases state=directory
+  file: dest=/home/{{item[0].name}}/{{item[1]}} state=directory owner={{item[0].name}}
   with_items: sites
+  with_nested:
+    - sites
+    - ['shared/log', 'shared/pids', 'releases']
 
 # I find with_subelements a little complex. It takes a list of attribute
 # names representing a path to recurse down while forming a cross product.
@@ -42,8 +48,10 @@
 
 - name: nginx conf
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root mode=0444
+  notify: restart nginx
 
 - name: site nginx config
   template: dest=/etc/nginx/conf.d/{{item.name}}.conf src="nginx-site.conf.j2"
               owner=root group=root mode=0444
   with_items: sites
+  notify: restart nginx

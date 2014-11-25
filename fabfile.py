@@ -1,7 +1,7 @@
-from fabric.api import cd, run, sudo, env, execute, task, local
+from fabric.api import cd, run, sudo, env, execute, task, settings
 from datetime import datetime
 
-env.hosts = ['andrewlorente.com']
+env.hosts = ['104.236.183.139']
 
 @task
 def deploy(app_name):
@@ -26,9 +26,9 @@ def deploy(app_name):
     execute(update_symlink, app_name, release_dir, hosts=app['hosts'])
     if 'restart' in app:
         for service in app['restart']:
-            execute(restart, service, hosts=['alorente@andrewlorente.com'])
+            execute(restart, service, hosts=['alorente@104.236.183.139'])
     else:
-        execute(restart, app_name, hosts=['alorente@andrewlorente.com'])
+        execute(restart, app_name, hosts=['alorente@104.236.183.139'])
 
 def checkout(repo, release_dir):
     repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(repo)
@@ -50,7 +50,8 @@ def build_python_with_setup(app, release_dir):
     return build_python(app, release_dir, 'Env/bin/python setup.py develop')
 
 def build_python_with_requirements(app, release_dir):
-    return build_python(app, release_dir, 'Env/bin/pip install -r requirements.txt')
+    return build_python(app, release_dir,
+                        'Env/bin/pip install -r requirements.txt')
 
 def build_python(app, release_dir, requirements_command):
     with cd(release_dir):
@@ -70,31 +71,34 @@ def update_symlink(app, release_dir):
     run("ln -nfs {0} /home/{1}/current".format(release_dir, app))
 
 def restart(app):
-    sudo("initctl restart " + app)
+    with settings(warn_only=True):
+        result = sudo("initctl restart " + app)
+    if result.return_code == 1:
+        sudo("initctl start " + app)
 
 apps = {
     'bloge': {
         'build': build_haskell,
-        'hosts': ['bloge@andrewlorente.com'],
+        'hosts': ['bloge@104.236.183.139'],
     },
     'andrewlorente': {
         'build': build_haskell,
-        'hosts': ['andrewlorente@andrewlorente.com'],
+        'hosts': ['andrewlorente@104.236.183.139'],
     },
     'catsnap': {
         'build': build_python_with_setup,
-        'hosts': ['catsnap@andrewlorente.com'],
+        'hosts': ['catsnap@104.236.183.139'],
         'extra': [dotenv, yoyo_migrate],
         'restart': ['catsnap', 'catsnap-worker']
     },
     'identity': {
         'build': build_python_with_requirements,
-        'hosts': ['identity@andrewlorente.com'],
+        'hosts': ['identity@104.236.183.139'],
         'extra': dotenv,
     },
     'paste': {
         'build': build_js,
-        'hosts': ['paste@andrewlorente.com'],
+        'hosts': ['paste@104.236.183.139'],
         'repo': 'haste-server',
     },
 }
