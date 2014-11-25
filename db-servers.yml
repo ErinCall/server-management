@@ -1,9 +1,13 @@
 - hosts: db-servers
   sudo: yes
-  sudo_user: postgres
+  sudo_user: root
   roles:
     - common
     - db-server
   handlers:
     - name: restart postgresql
       service: name=postgresql state=restarted
+    - name: import pubkey
+      command: /usr/bin/gpg --import --batch --yes /root/alorente.pub
+    - name: import trustdb
+      command: /usr/bin/gpg --import-ownertrust /root/alorente.trustdb
