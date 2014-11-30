@@ -10,4 +10,4 @@ env HOME=/home/catsnap
 env ENV=/home/catsnap/shared/.env
 chdir /home/catsnap/current
 
-exec ./Env/bin/gunicorn catsnap.app:app -b 0.0.0.0:5000 -w 3 --error-logfile /home/catsnap/shared/log/error.log --access-logfile /home/catsnap/shared/log/access.log
+exec ./Env/bin/gunicorn catsnap.app:app -b 0.0.0.0:{{ item.0.port }} -w 3 --error-logfile /home/catsnap/shared/log/error.log --access-logfile /home/catsnap/shared/log/access.log

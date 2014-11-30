@@ -6,5 +6,6 @@ respawn
 console log
 setuid paste
 env HOME=/home/paste
+env PORT={{ item.0.port }}
 chdir /home/paste/current
 exec nodejs server.js

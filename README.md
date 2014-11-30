@@ -16,6 +16,4 @@ The mailman server is also not managed; stupid mailman needs Apache.
 
 ## TODO
 
-1. stop pointing hosts.cfg at raw IP
-1. stop pointing the fabfile at raw IP
-1. make upstart confs templates, and use the site var for port
+1. stop pointing at raw IP in hosts.cfg and the fabfile

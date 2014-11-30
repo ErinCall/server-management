@@ -3,4 +3,4 @@ description "andrewlorente"
 start on startup
 setuid andrewlorente
 chdir /home/andrewlorente/current
-exec dist/build/andrewlorente/andrewlorente -p 8000
+exec dist/build/andrewlorente/andrewlorente -p {{ item.0.port }}
