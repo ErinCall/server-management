@@ -18,5 +18,4 @@ The mailman server is also not managed; stupid mailman needs Apache.
 
 1. stop pointing hosts.cfg at raw IP
 1. stop pointing the fabfile at raw IP
-1. add .env files for catsnap and identity as encrypted vars
 1. make upstart confs templates, and use the site var for port

@@ -26,6 +26,16 @@
     - sites
     - ['shared/log', 'shared/pids', 'releases']
 
+- include_vars: catsnap-env.yml
+- name: catsnap dotenv file
+  template: src=dotenv.j2 dest=/home/catsnap/shared/.env
+              owner=catsnap group=catsnap mode=0400
+
+- include_vars: identity-env.yml
+- name: identity dotenv file
+  template: src=dotenv.j2 dest=/home/identity/shared/.env
+              owner=identity group=identity mode=0400
+
 # I find with_subelements a little complex. It takes a list of attribute
 # names representing a path to recurse down while forming a cross product.
 # The numbers are the 0-indexed recursion depth, so here, item.1 is each service
