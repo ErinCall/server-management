@@ -6,7 +6,7 @@ Install dependencies with `pip install -r requirements.txt`
 
 Deploy sites with `fab deploy:$site`
 
-Deploy configuration with `ansible-playbook site.yml --ask-vault-pass`.
+Deploy configuration with `ansible-playbook site.yml`.
 
 The ansible playbooks assume they're pointed at an Ubuntu 14.04 server, configured for passwordless sudo with an `alorente` sudoer. The `Webserver` snapshot on DigitalOcean is sufficient; it includes sane iptables and fail2ban.
 
@@ -18,6 +18,5 @@ The mailman server is also not managed; stupid mailman needs Apache.
 
 1. stop pointing hosts.cfg at raw IP
 1. stop pointing the fabfile at raw IP
-1. encrypt vault with pgp?
 1. add .env files for catsnap and identity as encrypted vars
 1. make upstart confs templates, and use the site var for port
