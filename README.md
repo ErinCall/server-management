@@ -13,7 +13,3 @@ The ansible playbooks assume they're pointed at an Ubuntu 14.04 server, configur
 The gitlab server is a prepackaged DO droplet; I've customized it with a 13.10->14.04 upgrade and some SSL rule changes to make ssllabs happy.
 
 The mailman server is also not managed; stupid mailman needs Apache.
-
-## TODO
-
-1. stop pointing at raw IP in hosts.cfg and the fabfile

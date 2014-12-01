@@ -2,7 +2,7 @@ from fabric.api import cd, run, sudo, env, execute, task, settings
 from datetime import datetime
 from collections import OrderedDict
 
-env.hosts = ['alorente@104.236.173.222']
+env.hosts = ['alorente@andrewlorente.com']
 
 @task
 def deploy(app_name):
@@ -25,7 +25,7 @@ def deploy(app_name):
             execute(extra, app_name, release_dir, hosts=app['hosts'])
 
     execute(update_symlink, app_name, release_dir, hosts=app['hosts'])
-    execute(bounce, app_name, hosts=['alorente@104.236.173.222'])
+    execute(bounce, app_name, hosts=['alorente@andrewlorente.com'])
 
 def checkout(repo, release_dir):
     repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(repo)
@@ -89,26 +89,26 @@ def list_apps():
 apps = OrderedDict([
     ('bloge', {
         'build': build_haskell,
-        'hosts': ['bloge@104.236.173.222'],
+        'hosts': ['bloge@andrewlorente.com'],
     }),
     ('andrewlorente', {
         'build': build_haskell,
-        'hosts': ['andrewlorente@104.236.173.222'],
+        'hosts': ['andrewlorente@andrewlorente.com'],
     }),
     ('catsnap', {
         'build': build_python_with_setup,
-        'hosts': ['catsnap@104.236.173.222'],
+        'hosts': ['catsnap@andrewlorente.com'],
         'extra': [dotenv, yoyo_migrate],
         'services': ['catsnap', 'catsnap-worker']
     }),
     ('identity', {
         'build': build_python_with_requirements,
-        'hosts': ['identity@104.236.173.222'],
+        'hosts': ['identity@andrewlorente.com'],
         'extra': dotenv,
     }),
     ('paste', {
         'build': build_js,
-        'hosts': ['paste@104.236.173.222'],
+        'hosts': ['paste@andrewlorente.com'],
         'repo': 'haste-server',
     }),
 ])
