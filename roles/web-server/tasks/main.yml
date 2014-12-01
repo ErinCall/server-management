@@ -1,0 +1,58 @@
+---
+- apt: name={{item}} state=present
+  with_items:
+    - libjpeg-dev
+    - libmagickwand-dev
+    - python-dev
+    - python-virtualenv
+    - nginx
+    - nodejs
+    - npm
+- apt: name=haskell-platform
+  notify:
+    - update cabal packages
+    - build new cabal
+
+- user: name={{item.name}} state=present shell=/bin/bash home=/home/{{item.name}}
+  with_items: sites
+
+- authorized_key: user={{item.name}} key="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ== andrewlorente@Chunk.local"
+  with_items: sites
+
+- name: release directories
+  file: dest=/home/{{item[0].name}}/{{item[1]}} state=directory owner={{item[0].name}}
+  with_items: sites
+  with_nested:
+    - sites
+    - ['shared/log', 'shared/pids', 'releases']
+
+- include_vars: catsnap-env.yml
+- name: catsnap dotenv file
+  template: src=dotenv.j2 dest=/home/catsnap/shared/.env
+              owner=catsnap group=catsnap mode=0400
+
+- include_vars: identity-env.yml
+- name: identity dotenv file
+  template: src=dotenv.j2 dest=/home/identity/shared/.env
+              owner=identity group=identity mode=0400
+
+# I find with_subelements a little complex. It takes a list of attribute
+# names representing a path to recurse down while forming a cross product.
+# The numbers are the 0-indexed recursion depth, so here, item.1 is each service
+# within each site. Whew!
+- name: upstart services
+  template: src={{item.1}}.conf.j2 dest=/etc/init/{{item.1}}.conf
+          owner=root group=root mode=0400
+  with_subelements:
+    - sites
+    - services
+
+- name: nginx conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root mode=0444
+  notify: restart nginx
+
+- name: site nginx config
+  template: dest=/etc/nginx/conf.d/{{item.name}}.conf src="nginx-site.conf.j2"
+              owner=root group=root mode=0444
+  with_items: sites
+  notify: restart nginx

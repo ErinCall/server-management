@@ -1,0 +1,8 @@
+---
+- apt: name=znc state=present
+- lineinfile: dest=/etc/iptables.up.rules insertafter='443 -j ACCEPT'
+                line='-A INPUT -p tcp --dport 65432 -j ACCEPT'
+- file: path=/home/alorente/.znc/configs/ state=directory
+            owner=alorente group=alorente mode=0700
+- copy: dest=/home/alorente/.znc/configs/znc.conf src=znc.conf force=no
+            owner=alorente group=alorente mode=0600

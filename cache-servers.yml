@@ -1,0 +1,5 @@
+- hosts: cache-servers
+  sudo: yes
+  roles:
+    - common
+    - cache-server

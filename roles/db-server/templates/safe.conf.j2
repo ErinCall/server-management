@@ -1,0 +1,33 @@
+# vi: set ft=ruby :
+# {{ ansible_managed }}
+
+safe do
+
+  local :path => "/backup/:kind/:id"
+
+  s3 do
+    key "AKIAIGARGZPXL66ECSOQ"
+    secret "{{ aws_secret_access_key }}"
+    bucket "alorente-backups.s3.amazonaws.com"
+    path "/backup/:kind/:id"
+  end
+
+  gpg do
+    command "/usr/bin/gpg"
+    options  "--no-use-agent"
+    key "hello@andrewlorente.com"
+  end
+
+  keep do
+    local 20
+    s3 100
+  end
+
+  pgdump do
+    options "-i -x -O"   # -i => ignore version, -x => do not dump privileges (grant/revoke), -O => skip restoration of object ownership in plain text format
+
+    user "backups"
+
+    database :catsnap
+  end
+end

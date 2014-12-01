@@ -1,0 +1,21 @@
+---
+# packages I figure will be helpful no matter the context
+- apt: name={{item}} state=present
+  with_items:
+    - git
+    - libpq-dev
+    - postgresql-client-common
+    - redis-tools
+    - tree
+    - cowsay
+    - figlet
+
+# pip may not be directly needed for deployed apps, but ansible itself
+# may need python modules available on deploy targets, so it's nice to
+# have it available by default.
+- apt: name=python-pip state=present
+
+- copy: src=sblood.flf dest=/usr/share/figlet/sblood.flf
+          owner=root group=root mode=0644
+- copy: src=motd-footer.sh dest=/etc/update-motd.d/99-footer
+          owner=root group=root mode=0755

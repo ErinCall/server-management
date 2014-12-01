@@ -1,4 +1,0 @@
-forge "http://forge.puppetlabs.com"
-
-mod 'puppetlabs/stdlib'
-mod 'dhutty/nginx', git: 'https://github.com/AndrewLorente/puppet-nginx.git'

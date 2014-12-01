@@ -1,0 +1,12 @@
+- hosts: web-servers
+  sudo: yes
+  roles:
+    - common
+    - web-server
+  handlers:
+    - name: restart nginx
+      command: /etc/init.d/nginx restart
+    - name: update cabal packages
+      command: cabal update
+    - name: build new cabal
+      command: cabal install --global cabal-install

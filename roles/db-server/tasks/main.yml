@@ -1,0 +1,33 @@
+---
+- apt: name=postgresql-9.3 state=present
+- pip: name=psycopg2 version=2.5
+- copy: src=pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
+          owner=postgres group=postgres
+  notify: restart postgresql
+- copy: src=pg_ident.conf dest=/etc/postgresql/9.3/main/pg_ident.conf
+          owner=postgres group=postgres
+  notify: restart postgresql
+- postgresql_user: name=catsnap password=md50a15f33572f8a7c8b05daf48e87446b4
+                    encrypted=true role_attr_flags=LOGIN
+  sudo_user: postgres
+- postgresql_db: name=catsnap template=template1 owner=catsnap
+  sudo_user: postgres
+
+# backups
+- postgresql_user: name=backups role_attr_flags=LOGIN,SUPERUSER
+  sudo_user: postgres
+- apt: name={{item}} state=present
+  with_items:
+    - gnupg
+    - ruby2.0
+- command: /usr/bin/gem2.0 install astrails-safe
+            creates=/usr/local/bin/astrails-safe
+- copy: src=alorente.pub dest=/root/alorente.pub
+  notify: import pubkey
+- copy: src=alorente.trustdb dest=/root/alorente.trustdb
+  notify: import trustdb
+- template: dest=/root/safe.conf src=safe.conf.j2
+- file: dest=/var/log/cron state=directory owner=root group=root mode=0700
+- cron: name=backup hour=9 minute=00
+          job='GEM_HOME=/root/.gem/ruby/2.0.0/ /usr/local/bin/astrails-safe
+          /root/safe.conf >> /var/log/cron/backup-`date "+\%Y\%m\%d_\%H\%M"`.log 2>&1'

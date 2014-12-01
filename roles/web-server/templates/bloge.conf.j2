@@ -1,0 +1,6 @@
+description "bloge"
+
+start on startup
+setuid bloge
+chdir /home/bloge/current
+exec dist/build/bloge/bloge -p {{ item.0.port }} /home/bloge/current/posts
