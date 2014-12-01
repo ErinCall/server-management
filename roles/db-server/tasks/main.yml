@@ -28,6 +28,6 @@
   notify: import trustdb
 - template: dest=/root/safe.conf src=safe.conf.j2
 - file: dest=/var/log/cron state=directory owner=root group=root mode=0700
-- cron: name=backup hour=9
+- cron: name=backup hour=9 minute=00
           job='GEM_HOME=/root/.gem/ruby/2.0.0/ /usr/local/bin/astrails-safe
           /root/safe.conf >> /var/log/cron/backup-`date "+\%Y\%m\%d_\%H\%M"`.log 2>&1'
