@@ -1,7 +1,8 @@
 from fabric.api import cd, run, sudo, env, execute, task, settings
 from datetime import datetime
+from collections import OrderedDict
 
-env.hosts = ['104.236.183.139']
+env.hosts = ['alorente@104.236.173.222']
 
 @task
 def deploy(app_name):
@@ -24,11 +25,7 @@ def deploy(app_name):
             execute(extra, app_name, release_dir, hosts=app['hosts'])
 
     execute(update_symlink, app_name, release_dir, hosts=app['hosts'])
-    if 'restart' in app:
-        for service in app['restart']:
-            execute(restart, service, hosts=['alorente@104.236.183.139'])
-    else:
-        execute(restart, app_name, hosts=['alorente@104.236.183.139'])
+    execute(bounce, app_name, hosts=['alorente@104.236.173.222'])
 
 def checkout(repo, release_dir):
     repo = "https://git.andrewlorente.com/AndrewLorente/{0}.git".format(repo)
@@ -70,36 +67,49 @@ def yoyo_migrate(app, release_dir):
 def update_symlink(app, release_dir):
     run("ln -nfs {0} /home/{1}/current".format(release_dir, app))
 
-def restart(app):
-    with settings(warn_only=True):
-        result = sudo("initctl restart " + app)
-    if result.return_code == 1:
-        sudo("initctl start " + app)
+@task
+def bounce(app_name):
+    app = apps[app_name]
+    if 'services' in app:
+        services = app['services']
+    else:
+        services = [app_name]
 
-apps = {
-    'bloge': {
+    for service in services:
+        with settings(warn_only=True):
+            result = sudo("initctl restart " + service)
+        if result.return_code == 1:
+            sudo("initctl start " + service)
+
+@task
+def list_apps():
+    for app_name in apps.keys():
+        print app_name
+
+apps = OrderedDict([
+    ('bloge', {
         'build': build_haskell,
-        'hosts': ['bloge@104.236.183.139'],
-    },
-    'andrewlorente': {
+        'hosts': ['bloge@104.236.173.222'],
+    }),
+    ('andrewlorente', {
         'build': build_haskell,
-        'hosts': ['andrewlorente@104.236.183.139'],
-    },
-    'catsnap': {
+        'hosts': ['andrewlorente@104.236.173.222'],
+    }),
+    ('catsnap', {
         'build': build_python_with_setup,
-        'hosts': ['catsnap@104.236.183.139'],
+        'hosts': ['catsnap@104.236.173.222'],
         'extra': [dotenv, yoyo_migrate],
-        'restart': ['catsnap', 'catsnap-worker']
-    },
-    'identity': {
+        'services': ['catsnap', 'catsnap-worker']
+    }),
+    ('identity', {
         'build': build_python_with_requirements,
-        'hosts': ['identity@104.236.183.139'],
+        'hosts': ['identity@104.236.173.222'],
         'extra': dotenv,
-    },
-    'paste': {
+    }),
+    ('paste', {
         'build': build_js,
-        'hosts': ['paste@104.236.183.139'],
+        'hosts': ['paste@104.236.173.222'],
         'repo': 'haste-server',
-    },
-}
+    }),
+])
 
