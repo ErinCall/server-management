@@ -20,6 +20,7 @@ server {
   ssl on;
   ssl_certificate /etc/ssl/STAR_andrewlorente_com.chained.crt;
   ssl_certificate_key /etc/ssl/andrewlorente.com.key;
+  ssl_session_cache shared:SSL:50m;
   ssl_session_timeout 5m;
 
   ssl_protocols TLSv1 TLSv1.2;
