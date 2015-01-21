@@ -20,8 +20,7 @@
   with_items:
     - gnupg
     - ruby2.0
-- command: /usr/bin/gem2.0 install astrails-safe
-            creates=/usr/local/bin/astrails-safe
+- gem: name=astrails-safe executable=/usr/bin/gem2.0 version=0.3.1
 - copy: src=alorente.pub dest=/root/alorente.pub
   notify: import pubkey
 - copy: src=alorente.trustdb dest=/root/alorente.trustdb
