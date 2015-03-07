@@ -1,8 +1,8 @@
 ---
 sites:
-  - name: andrewlorente
+  - name: www
     port: 8000
-    domain: andrewlorente.com
+    domain: www.andrewlorente.com
     services: [andrewlorente]
   - name: bloge
     port: 8001
@@ -22,3 +22,7 @@ sites:
     port: 7777
     domain: paste.andrewlorente.com
     services: [paste]
+  - name: irc
+    port: 65431
+    domain: irc.andrewlorente.com
+    services: []

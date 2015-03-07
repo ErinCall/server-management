@@ -91,9 +91,10 @@ apps = OrderedDict([
         'build': build_haskell,
         'hosts': ['bloge@andrewlorente.com'],
     }),
-    ('andrewlorente', {
+    ('www', {
         'build': build_haskell,
-        'hosts': ['andrewlorente@andrewlorente.com'],
+        'hosts': ['www@andrewlorente.com'],
+        'repo': 'andrewlorente'
     }),
     ('catsnap', {
         'build': build_python_with_setup,

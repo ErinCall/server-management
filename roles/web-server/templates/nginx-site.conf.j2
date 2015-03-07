@@ -12,14 +12,14 @@ server {
 }
 
 server {
-  listen      *:443;
+  listen      *:443 ssl;
   server_name {{ item.domain }};
   root /home/{{ item.name }}/current/static;
 
 
   ssl on;
-  ssl_certificate /etc/ssl/STAR_andrewlorente_com.chained.crt;
-  ssl_certificate_key /etc/ssl/andrewlorente.com.key;
+  ssl_certificate /etc/ssl/{{item.name}}_andrewlorente_com.chained.crt;
+  ssl_certificate_key /etc/ssl/{{item.name}}_andrewlorente_com.key;
   ssl_session_cache shared:SSL:50m;
   ssl_session_timeout 5m;
 

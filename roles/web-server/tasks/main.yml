@@ -47,6 +47,18 @@
     - sites
     - services
 
+- name: ssl certificates
+  copy: src={{item.name}}_andrewlorente_com.chained.crt dest=/etc/ssl/{{item.name}}_andrewlorente_com.chained.crt owner=root group=root mode=0444
+  with_items: sites
+  notify: restart nginx
+
+- include_vars: ssl_keys.yml
+
+- name: ssl keys
+  template: src=ssl_key.j2 dest=/etc/ssl/{{item.name}}_andrewlorente_com.key owner=root group=root mode=0400
+  with_items: ssl_keys
+  notify: restart nginx
+
 - name: nginx conf
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root mode=0444
   notify: restart nginx
@@ -57,7 +69,6 @@
   with_items: sites
   notify: restart nginx
 
-- name: znc nginx config
-  template: dest=/etc/nginx/conf.d/znc.conf src="nginx-znc.conf.j2"
-              owner=root group=root mode=0444
+- name: andrewlorente.com www redirect
+  template: dest=/etc/nginx/conf.d/andrewlorente-www-redirect.conf src=nginx-andrewlorente-www-redirect.conf.j2
   notify: restart nginx
