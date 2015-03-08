@@ -41,8 +41,8 @@
 
 # I find with_subelements a little complex. It takes a list of attribute
 # names representing a path to recurse down while forming a cross product.
-# The numbers are the 0-indexed recursion depth, so here, item.1 is each service
-# within each site. Whew!
+# The numbers are the 0-indexed recursion depth, so here, item.1 is each
+# service within each site. Whew!
 - name: upstart services
   template: src={{item.1}}.conf.j2 dest=/etc/init/{{item.1}}.conf
           owner=root group=root mode=0400
