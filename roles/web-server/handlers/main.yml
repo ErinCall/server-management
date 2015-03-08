@@ -1,0 +1,7 @@
+---
+- name: restart nginx
+  command: /etc/init.d/nginx restart
+- name: update cabal packages
+  command: cabal update
+- name: build new cabal
+  command: cabal install --global cabal-install
