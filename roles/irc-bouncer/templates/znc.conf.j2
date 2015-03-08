@@ -1,0 +1,6 @@
+description "znc"
+
+start on startup
+setuid irc
+chdir /home/irc
+exec /usr/bin/znc --datadir /home/irc/.znc --foreground >> /var/log/znc.log 2>&1

@@ -1,8 +1,30 @@
 ---
+- include_vars: ssl_keys.yml
+- include_vars: ssl_certificates.yml
+
 - apt: name=znc state=present
-- lineinfile: dest=/etc/iptables.up.rules insertafter='443 -j ACCEPT'
+
+- name: open IRC port for ZNC
+  lineinfile: dest=/etc/iptables.up.rules insertafter='443 -j ACCEPT'
                 line='-A INPUT -p tcp --dport 65432 -j ACCEPT'
-- file: path=/home/alorente/.znc/configs/ state=directory
-            owner=alorente group=alorente mode=0700
-- copy: dest=/home/alorente/.znc/configs/znc.conf src=znc.conf force=no
-            owner=alorente group=alorente mode=0600
+
+- user: name=irc state=present shell=/bin/bash home=/home/irc
+        groups="irc,syslog"
+
+- file: path=/home/irc/.znc/configs/ state=directory
+            owner=irc group=irc mode=0700
+
+- name: znc config
+  copy: dest=/home/irc/.znc/configs/znc.conf src=znc.conf force=no
+            owner=irc group=irc mode=0600
+  notify: restart znc
+
+- name: znc ssl key and certificate
+  template: src=znc.pem.j2 dest=/home/irc/.znc/znc.pem
+            owner=irc group=irc mode=0600
+  notify: restart znc
+
+- name: znc upstart config
+  template: src=znc.conf.j2 dest=/etc/init/znc.conf
+            owner=root group=root mode=0400
+  notify: restart znc
