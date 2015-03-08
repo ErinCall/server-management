@@ -55,9 +55,10 @@
 - include_vars: ssl_keys.yml
 
 - name: ssl keys
-  template: src=ssl_key.j2 dest=/etc/ssl/{{item.name}}_andrewlorente_com.key owner=root group=root mode=0400
-  with_items: ssl_keys
+  template: src=ssl_key.j2 dest=/etc/ssl/{{item.key}}_andrewlorente_com.key owner=root group=root mode=0400
+  with_dict: ssl_keys
   notify: restart nginx
+  no_log: true
 
 - name: nginx conf
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root mode=0444
