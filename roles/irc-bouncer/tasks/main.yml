@@ -9,7 +9,7 @@
                 line='-A INPUT -p tcp --dport 65432 -j ACCEPT'
 
 - user: name=irc state=present shell=/bin/bash home=/home/irc
-        groups="irc,syslog"
+        groups=syslog append=yes
 
 - file: path=/home/irc/.znc/configs/ state=directory
             owner=irc group=irc mode=0700
