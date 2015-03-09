@@ -16,7 +16,7 @@ sites:
       - catsnap-worker
   - name: identity
     port: 5001
-    domain: id.andrewlorente.com
+    domain: identity.andrewlorente.com
     services: [identity]
   - name: paste
     port: 7777
