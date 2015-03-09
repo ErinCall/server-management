@@ -3,7 +3,7 @@ sites:
   - name: www
     port: 8000
     domain: www.andrewlorente.com
-    services: [andrewlorente]
+    services: [www]
   - name: bloge
     port: 8001
     domain: blog.andrewlorente.com
