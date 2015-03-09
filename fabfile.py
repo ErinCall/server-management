@@ -35,7 +35,7 @@ def build_haskell(app, release_dir):
     with cd(release_dir):
         run("cabal update")
         run("cabal install --constraint 'template-haskell installed' "
-            "--dependencies-only --force-reinstall")
+            "--dependencies-only --force-reinstall --reorder-goals")
         run("cabal configure")
         run("cabal build")
 
