@@ -2,6 +2,7 @@
 server {
   listen      80;
   server_name andrewlorente.com;
+  add_header X-Clacks-Overhead "GNU Terry Pratchett";
 
   return 301 https://www.andrewlorente.com$request_uri;
 }
@@ -9,6 +10,7 @@ server {
 server {
   listen      *:443 ssl;
   server_name andrewlorente.com;
+  add_header X-Clacks-Overhead "GNU Terry Pratchett";
 
   ssl on;
   ssl_certificate /etc/ssl/www_andrewlorente_com.chained.crt;
