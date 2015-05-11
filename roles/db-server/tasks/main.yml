@@ -21,9 +21,9 @@
     - gnupg
     - ruby2.0
 - gem: name=astrails-safe executable=/usr/bin/gem2.0 version=0.3.1
-- copy: src=alorente.pub dest=/root/alorente.pub
+- copy: src=ecall.pub dest=/root/ecall.pub
   notify: import pubkey
-- copy: src=alorente.trustdb dest=/root/alorente.trustdb
+- copy: src=ecall.trustdb dest=/root/ecall.trustdb
   notify: import trustdb
 - template: dest=/root/safe.conf src=safe.conf.j2
 - file: dest=/var/log/cron state=directory owner=root group=root mode=0700

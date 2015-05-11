@@ -19,7 +19,7 @@
 - user: name={{item.name}} state=present shell=/bin/bash home=/home/{{item.name}}
   with_items: sites
 
-- authorized_key: user={{item.name}} key="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ== andrewlorente@Chunk.local"
+- authorized_key: user={{item.name}} key="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6q+NIMbgehuTQN/LymntUtqorU3qNqN05yXZKwgRYDapn8XLgJA3OGmfEcaMyK+0ry/US4Kl9fTk5H16YZ/ZTRbJfssVvbWSDTBP/ho1hhjpLEgHD3lmhuO27reypg5aawJpQBFzLKHDBUZ/sUOLawP9LVRiPp2Ve2mG+K3R+k6U9b2MaEIF3cfp3FU20wex/M9pce4a+PjmdM4Yvuy0Mn4MfuhpoLRfEBmI1qlwrqvCTeMK4OGufEQXpe+KmjBovMTKx142lm6XSTJ2JRtuOrSGqUaFFyzHSUSjLGwl1zjdjOafsJZvclyTt/dDB1RmX/Fr2YYk+EZN/a33agDJTQ== erincall@Slim.local"
   with_items: sites
 
 - name: release directories
@@ -51,14 +51,14 @@
     - services
 
 - name: ssl certificates
-  template: src=ssl_certificate.j2 dest=/etc/ssl/{{item.key}}_andrewlorente_com.chained.crt
+  template: src=ssl_certificate.j2 dest=/etc/ssl/{{item.key}}_erincall_com.chained.crt
             owner=root group=root mode=0444
   with_dict: ssl_certificates
   notify: restart nginx
   no_log: true # these aren't secret, but they're obnoxiously noisy
 
 - name: ssl keys
-  template: src=ssl_key.j2 dest=/etc/ssl/{{item.key}}_andrewlorente_com.key owner=root group=root mode=0400
+  template: src=ssl_key.j2 dest=/etc/ssl/{{item.key}}_erincall_com.key owner=root group=root mode=0400
   with_dict: ssl_keys
   notify: restart nginx
   no_log: true
@@ -73,7 +73,7 @@
   with_items: sites
   notify: restart nginx
 
-- name: andrewlorente.com www redirect
-  template: dest=/etc/nginx/conf.d/andrewlorente-www-redirect.conf src=nginx-andrewlorente-www-redirect.conf.j2
+- name: erincall.com www redirect
+  template: dest=/etc/nginx/conf.d/erincall-www-redirect.conf src=nginx-erincall-www-redirect.conf.j2
             owner=root group=root mode=0444
   notify: restart nginx

@@ -9,6 +9,6 @@
       command: /usr/lib/postgresql/9.3/bin/pg_ctl reload -D /etc/postgresql/9.3/main/
       sudo_user: postgresql
     - name: import pubkey
-      command: /usr/bin/gpg --import --batch --yes /root/alorente.pub
+      command: /usr/bin/gpg --import --batch --yes /root/ecall.pub
     - name: import trustdb
-      command: /usr/bin/gpg --import-ownertrust /root/alorente.trustdb
+      command: /usr/bin/gpg --import-ownertrust /root/ecall.trustdb

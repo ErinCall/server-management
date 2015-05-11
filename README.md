@@ -8,7 +8,7 @@ Deploy sites with `fab deploy:$site`
 
 Deploy configuration with `ansible-playbook site.yml`.
 
-The ansible playbooks assume they're pointed at an Ubuntu 14.04 server, configured for passwordless sudo with an `alorente` sudoer. The `Webserver` snapshot on DigitalOcean is sufficient; it includes sane iptables and fail2ban.
+The ansible playbooks assume they're pointed at an Ubuntu 14.04 server, configured for passwordless sudo with an `ecall` sudoer. The `Webserver` snapshot on DigitalOcean is sufficient; it includes sane iptables and fail2ban.
 
 The gitlab server is a prepackaged DO droplet; I've customized it with a 13.10->14.04 upgrade and some SSL rule changes to make ssllabs happy.
 
