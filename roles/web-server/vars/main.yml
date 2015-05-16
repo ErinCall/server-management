@@ -2,27 +2,27 @@
 sites:
   - name: www
     port: 8000
-    domain: www.andrewlorente.com
+    domain: www.erincall.com
     services: [www]
   - name: bloge
     port: 8001
-    domain: blog.andrewlorente.com
+    domain: blog.erincall.com
     services: [bloge]
   - name: catsnap
     port: 5000
-    domain: catsnap.andrewlorente.com
+    domain: catsnap.erincall.com
     services:
       - catsnap
       - catsnap-worker
   - name: identity
     port: 5001
-    domain: identity.andrewlorente.com
+    domain: identity.erincall.com
     services: [identity]
   - name: paste
     port: 7777
-    domain: paste.andrewlorente.com
+    domain: paste.erincall.com
     services: [paste]
   - name: irc
     port: 65431
-    domain: irc.andrewlorente.com
+    domain: irc.erincall.com
     services: []
