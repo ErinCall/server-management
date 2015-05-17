@@ -1,8 +1,0 @@
----
-sites:
-  - name: www
-  - name: blog
-  - name: catsnap
-  - name: identity
-  - name: paste
-  - name: irc

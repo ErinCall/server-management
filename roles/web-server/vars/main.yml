@@ -2,27 +2,27 @@
 sites:
   - name: www
     port: 8000
-    domain: www.erincall.com
+    domain: www
     services: [www]
   - name: bloge
     port: 8001
-    domain: blog.erincall.com
+    domain: blog
     services: [bloge]
   - name: catsnap
     port: 5000
-    domain: catsnap.erincall.com
+    domain: catsnap
     services:
       - catsnap
       - catsnap-worker
   - name: identity
     port: 5001
-    domain: identity.erincall.com
+    domain: identity
     services: [identity]
   - name: paste
     port: 7777
-    domain: paste.erincall.com
+    domain: paste
     services: [paste]
   - name: irc
     port: 65431
-    domain: irc.erincall.com
+    domain: irc
     services: []
