@@ -3,3 +3,4 @@
 - include: db-servers.yml
 - include: cache-servers.yml
 - include: irc-bouncers.yml
+- include: alorente-servers.yml

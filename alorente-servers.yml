@@ -1,0 +1,5 @@
+- hosts: alorente-servers
+  sudo: yes
+  roles:
+    - common
+    - alorente-server
