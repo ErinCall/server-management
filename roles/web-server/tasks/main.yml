@@ -50,6 +50,15 @@
     - sites
     - services
 
+# This is a "diffie-helmann group", which uses a different large prime from
+# the usual one so the NSA can't precompute its ...mathematical properties...
+# and intercept the key-exchange (the "logjam" vulnerability).
+# It's generated with `openssl dhparam -out dhparams.pem 2048`.
+- name: copy dhparams.pem for ssl
+  copy: src=dhparams.pem dest=/etc/ssl/dhparams.pem
+        owner=root group=root mode=0444
+  notify: restart nginx
+
 - name: ecall ssl certificates
   template: src=ssl_certificate.j2 dest=/etc/ssl/{{item.key}}_erincall_com.chained.crt
             owner=root group=root mode=0444
