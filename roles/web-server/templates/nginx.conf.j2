@@ -1,4 +1,7 @@
 # {{ ansible_managed }}
+{# this doesn't actually need to be imported with context, but I'm running
+ # into an ansible error when importing without context. #}
+{% import 'nginx-site.conf.j2' as nginx_site with context %}
 
 user             www-data;
 worker_processes 1;
@@ -35,5 +38,7 @@ http {
   proxy_set_header X-Real-IP $remote_addr;
   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-  include /etc/nginx/conf.d/*.conf;
+  {% for site in sites %}
+    {{ nginx_site.conf(site) }}
+  {% endfor %}
 }

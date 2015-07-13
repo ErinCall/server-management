@@ -89,15 +89,5 @@
 
 - name: nginx conf
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root mode=0444
-  notify: restart nginx
-
-- name: site nginx config
-  template: dest=/etc/nginx/conf.d/{{item.name}}.conf src="nginx-site.conf.j2"
-            owner=root group=root mode=0444
-  with_items: sites
-  notify: restart nginx
-
-- name: www redirect
-  template: dest=/etc/nginx/conf.d/www-redirect.conf src=nginx-www-redirect.conf.j2
-            owner=root group=root mode=0444
+            validate="/usr/sbin/nginx -c %s -t"
   notify: restart nginx
