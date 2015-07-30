@@ -3,12 +3,6 @@ upstream {{ site.name }} {
   server localhost:{{ site.port }} weight=1;
 }
 
-map $http_upgrade $connection_upgrade {
-    default upgrade;
-    ''      close;
-}
-
-
 server {
   server_name {{ site.domain }}.erincall.com;
   listen      *:80;
