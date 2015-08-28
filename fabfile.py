@@ -56,13 +56,19 @@ def build_python(app, release_dir, requirements_command):
         run("source Env/bin/activate")
         run(requirements_command)
 
+def config_yml(app, release_dir):
+    run("ln -nfs /home/{0}/shared/config.yml "
+        "{1}/{0}/config/config.yml".format(app, release_dir))
+
 def dotenv(app, release_dir):
     run("ln -nfs /home/{0}/shared/.env {1}/.env".format(app, release_dir))
 
+# this is tied to using a config.yml. That isn't great, is it?
 def yoyo_migrate(app, release_dir):
-    run("DATABASE_URL=$(grep DATABASE_URL {0}/.env | sed s/DATABASE_URL=//); "
-        "{0}/Env/bin/yoyo-migrate -b apply {0}/migrations $DATABASE_URL".
-        format(release_dir))
+    run("DATABASE_URL=$(grep postgres_url {1}/{0}/config/config.yml | "
+        "cut -d' ' -f2); "
+        "{1}/Env/bin/yoyo-migrate -b apply {1}/migrations $DATABASE_URL"
+        .format(app, release_dir))
 
 def update_symlink(app, release_dir):
     run("ln -nfs {0} /home/{1}/current".format(release_dir, app))
@@ -99,7 +105,7 @@ apps = OrderedDict([
     ('catsnap', {
         'build': build_python_with_setup,
         'hosts': ['catsnap@erincall.com'],
-        'extra': [dotenv, yoyo_migrate],
+        'extra': [config_yml, yoyo_migrate],
         'services': ['catsnap', 'catsnap-worker']
     }),
     ('identity', {

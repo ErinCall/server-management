@@ -30,8 +30,8 @@
     - ['shared/log', 'shared/pids', 'releases']
 
 - include_vars: catsnap-env.yml
-- name: catsnap dotenv file
-  template: src=dotenv.j2 dest=/home/catsnap/shared/.env
+- name: catsnap configuration file
+  template: src=catsnap.config.yml.j2 dest=/home/catsnap/shared/config.yml
               owner=catsnap group=catsnap mode=0400
 
 - include_vars: identity-env.yml
