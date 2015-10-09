@@ -1,11 +1,22 @@
-{% macro conf(site) %}
+{#
+  The `first` argument indicates that this is the first instance of a site
+  conf to be called. It's used to work around an obnoxious problem: ihe
+  `ipv6only` setting has to be set inside a `server` block, but it can only be
+  specified once per port. So this macro has to behave a little differently
+  depending on whether it's been called before or not.
+#}
+{% macro conf(site, first=False) %}
 upstream {{ site.name }} {
   server localhost:{{ site.port }} weight=1;
 }
 
 server {
   server_name {{ site.domain }}.erincall.com;
-  listen      *:80;
+  {% if first %}
+    listen      [::]:80 ipv6only=off;
+  {% else %}
+    listen      [::]:80;
+  {% endif %}
   add_header X-Clacks-Overhead "GNU Terry Pratchett";
   if ($ssl_protocol = "") {
     rewrite ^ https://$server_name$request_uri permanent;
@@ -14,14 +25,19 @@ server {
 
 server {
   server_name  {{ site.domain }}.andrewlorente.com;
-  listen      *:80;
+  listen      [::]:80;
   add_header X-Clacks-Overhead "GNU Terry Pratchett";
 
   return 301 https://{{ site.domain }}.erincall.com$request_uri;
 }
 
 server {
-  listen      *:443 ssl;
+  {% if first %}
+    listen [::]:443 ssl ipv6only=off;
+  {% else %}
+    listen      [::]:443 ssl;
+  {% endif %}
+
   server_name {{ site.domain }}.erincall.com;
   root /home/{{ site.name }}/current/static;
   add_header X-Clacks-Overhead "GNU Terry Pratchett";
@@ -52,7 +68,7 @@ server {
 
 server {
   server_name  {{ site.domain }}.andrewlorente.com;
-  listen      *:443 ssl;
+  listen      [::]:443 ssl;
   add_header X-Clacks-Overhead "GNU Terry Pratchett";
 
   ssl on;

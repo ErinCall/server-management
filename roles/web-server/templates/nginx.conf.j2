@@ -44,6 +44,6 @@ http {
   }
 
   {% for site in sites %}
-    {{ nginx_site.conf(site) }}
+    {{ nginx_site.conf(site, first=loop.first) }}
   {% endfor %}
 }
