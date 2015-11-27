@@ -28,7 +28,7 @@ def deploy(app_name):
     execute(bounce, app_name, hosts=['ecall@erincall.com'])
 
 def checkout(repo, release_dir):
-    repo = "https://git.erincall.com/ErinCall/{0}.git".format(repo)
+    repo = "https://github.com/ErinCall/{0}.git".format(repo)
     run("git clone -q {0} {1}".format(repo, release_dir))
 
 def build_haskell(app, release_dir):
