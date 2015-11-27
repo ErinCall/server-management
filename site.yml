@@ -3,3 +3,20 @@
 - include: db-servers.yml
 - include: cache-servers.yml
 - include: irc-bouncers.yml
+- include: git-servers.yml
+
+# TODO: move catsap db conf out of roles/db-server
+
+# I'm thinking the new layout would be like
+# everything.yml:
+  # include allserver.yml
+  # include gitlab.yml
+# allserver.yml:
+  # include web-server.yml
+  # include db-server.yml
+  # include cache-server
+  # etc...
+# allserver.yml:
+  # include web-server
+  # include db-server
+  # etc...
