@@ -4,10 +4,6 @@ sites:
     port: 8000
     domain: www
     services: [www]
-  - name: bloge
-    port: 8001
-    domain: blog
-    services: [bloge]
   - name: catsnap
     port: 5000
     domain: catsnap
