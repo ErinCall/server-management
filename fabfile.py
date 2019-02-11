@@ -54,6 +54,7 @@ def build_python(app, release_dir, requirements_command):
     with cd(release_dir):
         run("virtualenv Env")
         run("source Env/bin/activate")
+        run("Env/bin/pip install --upgrade setuptools")
         run(requirements_command)
 
 def config_yml(app, release_dir):
@@ -63,11 +64,9 @@ def config_yml(app, release_dir):
 def dotenv(app, release_dir):
     run("ln -nfs /home/{0}/shared/.env {1}/.env".format(app, release_dir))
 
-# this is tied to using a config.yml. That isn't great, is it?
 def yoyo_migrate(app, release_dir):
-    run("DATABASE_URL=$(grep postgres_url {1}/{0}/config/config.yml | "
-        "cut -d' ' -f2); "
-        "{1}/Env/bin/yoyo-migrate -b apply {1}/migrations $DATABASE_URL"
+    run("source /home/{0}/shared/.env &&"
+        "{1}/Env/bin/yoyo -b apply -d $DATABASE_URL {1}/migrations"
         .format(app, release_dir))
 
 def update_symlink(app, release_dir):
