@@ -1,2 +1,2 @@
-fabric>=1.8
+fabric==1.14.1
 ansible>=1.7
