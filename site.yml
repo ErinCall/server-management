@@ -1,5 +1,5 @@
 ---
-- include: web-servers.yml
-- include: db-servers.yml
-- include: cache-servers.yml
-- include: irc-bouncers.yml
+- import_playbook: web-servers.yml
+- import_playbook: db-servers.yml
+- import_playbook: cache-servers.yml
+- import_playbook: irc-bouncers.yml

@@ -1,5 +1,5 @@
 - hosts: web-servers
-  sudo: yes
+  become: yes
   roles:
     - common
     - web-server

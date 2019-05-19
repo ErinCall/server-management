@@ -1,13 +1,13 @@
 - hosts: db-servers
-  sudo: yes
-  sudo_user: root
+  become: yes
+  become_user: root
   roles:
     - common
     - db-server
   handlers:
     - name: reload postgresql configuration
       command: /usr/lib/postgresql/9.3/bin/pg_ctl reload -D /etc/postgresql/9.3/main/
-      sudo_user: postgres
+      become_user: postgres
     - name: import pubkey
       command: /usr/bin/gpg --import --batch --yes /root/ecall.pub
     - name: import trustdb

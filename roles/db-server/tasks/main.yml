@@ -9,13 +9,13 @@
   notify: reload postgresql configuration
 - postgresql_user: name=catsnap password=md50a15f33572f8a7c8b05daf48e87446b4
                     encrypted=true role_attr_flags=LOGIN
-  sudo_user: postgres
+  become_user: postgres
 - postgresql_db: name=catsnap template=template1 owner=catsnap
-  sudo_user: postgres
+  become_user: postgres
 
 # backups
 - postgresql_user: name=backups role_attr_flags=LOGIN,SUPERUSER
-  sudo_user: postgres
+  become_user: postgres
 - apt: name={{item}} state=present
   with_items:
     - gnupg
