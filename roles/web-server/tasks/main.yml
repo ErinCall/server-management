@@ -2,15 +2,16 @@
 - include_vars: ssl_keys.yml
 - include_vars: ssl_certificates.yml
 
-- apt: name={{item}} state=present
-  with_items:
-    - libjpeg-dev
-    - libmagickwand-dev
-    - python-dev
-    - python-virtualenv
-    - nginx
-    - nodejs
-    - npm
+- apt:
+    state: present
+    pkg:
+      - libjpeg-dev
+      - libmagickwand-dev
+      - python-dev
+      - python-virtualenv
+      - nginx
+      - nodejs
+      - npm
 - apt: name=haskell-platform
   notify:
     - update cabal packages

@@ -16,10 +16,11 @@
 # backups
 - postgresql_user: name=backups role_attr_flags=LOGIN,SUPERUSER
   become_user: postgres
-- apt: name={{item}} state=present
-  with_items:
-    - gnupg
-    - ruby2.0
+- apt:
+    state: present
+    pkg:
+      - gnupg
+      - ruby2.0
 - gem: name=astrails-safe executable=/usr/bin/gem2.0 version=0.3.1
 - copy: src=ecall.pub dest=/root/ecall.pub
   notify: import pubkey
