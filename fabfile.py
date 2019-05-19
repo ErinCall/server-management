@@ -107,15 +107,5 @@ apps = OrderedDict([
         'extra': [config_yml, yoyo_migrate],
         'services': ['catsnap', 'catsnap-worker']
     }),
-    ('identity', {
-        'build': build_python_with_requirements,
-        'hosts': ['identity@erincall.com'],
-        'extra': dotenv,
-    }),
-    ('paste', {
-        'build': build_js,
-        'hosts': ['paste@erincall.com'],
-        'repo': 'haste-server',
-    }),
 ])
 

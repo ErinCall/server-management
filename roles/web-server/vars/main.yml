@@ -10,14 +10,6 @@ sites:
     services:
       - catsnap
       - catsnap-worker
-  - name: identity
-    port: 5001
-    domain: identity
-    services: [identity]
-  - name: paste
-    port: 7777
-    domain: paste
-    services: [paste]
   - name: irc
     port: 65431
     domain: irc
