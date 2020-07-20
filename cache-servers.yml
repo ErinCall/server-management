@@ -1,5 +1,0 @@
-- hosts: cache-servers
-  become: yes
-  roles:
-    - common
-    - cache-server

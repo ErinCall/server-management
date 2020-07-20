@@ -43,31 +43,12 @@ def build_js(app, release_dir):
     with cd(release_dir):
         run("npm install")
 
-def build_python_with_setup(app, release_dir):
-    return build_python(app, release_dir, 'Env/bin/python setup.py develop')
-
-def build_python_with_requirements(app, release_dir):
-    return build_python(app, release_dir,
-                        'Env/bin/pip install -r requirements.txt')
-
-def build_python(app, release_dir, requirements_command):
-    with cd(release_dir):
-        run("virtualenv Env")
-        run("source Env/bin/activate")
-        run("Env/bin/pip install --upgrade setuptools")
-        run(requirements_command)
-
 def config_yml(app, release_dir):
     run("ln -nfs /home/{0}/shared/config.yml "
         "{1}/{0}/config/config.yml".format(app, release_dir))
 
 def dotenv(app, release_dir):
     run("ln -nfs /home/{0}/shared/.env {1}/.env".format(app, release_dir))
-
-def yoyo_migrate(app, release_dir):
-    run("source /home/{0}/shared/.env &&"
-        "{1}/Env/bin/yoyo -b apply -d $DATABASE_URL {1}/migrations"
-        .format(app, release_dir))
 
 def update_symlink(app, release_dir):
     run("ln -nfs {0} /home/{1}/current".format(release_dir, app))
@@ -100,12 +81,6 @@ apps = OrderedDict([
         'build': build_haskell,
         'hosts': ['www@erincall.com'],
         'repo': 'erincall'
-    }),
-    ('catsnap', {
-        'build': build_python_with_setup,
-        'hosts': ['catsnap@erincall.com'],
-        'extra': [config_yml, yoyo_migrate],
-        'services': ['catsnap', 'catsnap-worker']
     }),
 ])
 

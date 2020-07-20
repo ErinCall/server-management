@@ -4,12 +4,6 @@ sites:
     port: 8000
     domain: www
     services: [www]
-  - name: catsnap
-    port: 5000
-    domain: catsnap
-    services:
-      - catsnap
-      - catsnap-worker
   - name: irc
     port: 65431
     domain: irc

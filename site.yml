@@ -1,5 +1,3 @@
 ---
 - import_playbook: web-servers.yml
-- import_playbook: db-servers.yml
-- import_playbook: cache-servers.yml
 - import_playbook: irc-bouncers.yml
