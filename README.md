@@ -6,7 +6,7 @@ Install dependencies with `pip install -r requirements.txt`
 
 Deploy sites with `fab deploy:$site`
 
-Deploy configuration with `ansible-playbook site.yml`.
+Deploy configuration with `ansible-playbook site.yml`. Use the `--check` flag for a dry run.
 
 The ansible playbooks assume they're pointed at an Ubuntu 14.04 server, configured for passwordless sudo with an `ecall` sudoer. The `webserver2017` snapshot on DigitalOcean is sufficient; it includes sane iptables and fail2ban.
 
