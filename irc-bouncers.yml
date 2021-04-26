@@ -1,4 +1,4 @@
-- hosts: irc-bouncers
+- hosts: irc_bouncers
   become: yes
   roles:
     - common
